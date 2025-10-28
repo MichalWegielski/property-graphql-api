@@ -66,7 +66,7 @@ query { health }
    - City:
      ```graphql
      query {
-       properties(filter: { city: "Fountain" }) {
+       properties(filter: { city: "Fountain Hills" }) {
          id
          city
        }
@@ -94,8 +94,8 @@ query { health }
 4. Property details by id
 
    ```graphql
-   query ($id: ID!) {
-     property(id: $id) {
+   query {
+     property(id: "paste_id") {
        id
        city
        street
@@ -131,7 +131,7 @@ query { health }
 
 6. Delete any property
    ```graphql
-   mutation ($id: ID!) {
-     deleteProperty(id: $id)
+   mutation {
+     deleteProperty(id: "paste_id")
    }
    ```
