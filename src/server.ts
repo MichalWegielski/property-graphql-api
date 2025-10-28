@@ -22,12 +22,10 @@ async function main() {
     listen: { port: 4000 },
     context: async () => ({ prisma }),
   });
-  // eslint-disable-next-line no-console
   console.log(`🚀 Server ready at ${url}`);
 }
 
 main().catch((err) => {
-  // eslint-disable-next-line no-console
   console.error(err);
   process.exit(1);
 });

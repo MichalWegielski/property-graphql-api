@@ -18,7 +18,6 @@ export async function listProperties(args: {
   filter?: PropertyFilter;
   sort?: SortOrder;
 }) {
-  // Validate filter
   try {
     if (args.filter) propertyFilterInput.parse(args.filter);
   } catch (_err) {
@@ -52,7 +51,6 @@ export async function createProperty(args: {
   state: string;
   zipCode: string;
 }) {
-  // Validate input
   try {
     createPropertyInput.parse(args);
   } catch (_err) {
@@ -61,7 +59,6 @@ export async function createProperty(args: {
     });
   }
 
-  // External API call with guarding
   let weather: { lat: number; long: number; current: unknown };
   try {
     weather = await fetchCurrentWeather({
