@@ -35,60 +35,103 @@ Open http://localhost:4000 and run:
 query { health }
 ```
 
-## GraphQL examples
+## Manual test checklist (User Stories 1–6)
 
-Add a property (calls Weatherstack during creation):
+1. Query all properties
 
-```graphql
-mutation {
-  addProperty(
-    city: "Fountain Hills"
-    street: "15528 E Golden Eagle Blvd"
-    state: "AZ"
-    zipCode: "85268"
-  ) {
-    id
-    city
-    state
-    zipCode
-    lat
-    long
-  }
-}
-```
+   ```graphql
+   query {
+     properties {
+       id
+       city
+       state
+       zipCode
+       createdAt
+     }
+   }
+   ```
 
-List with filter + sort:
+2. Sort by creation date
 
-```graphql
-query {
-  properties(filter: { city: "Fountain" }, sortByCreatedAt: desc) {
-    id
-    city
-    createdAt
-  }
-}
-```
+   ```graphql
+   query {
+     properties(sortByCreatedAt: desc) {
+       id
+       createdAt
+     }
+   }
+   ```
 
-Get by id:
+3. Filter by city / state / zipCode
+   - City:
+     ```graphql
+     query {
+       properties(filter: { city: "Fountain" }) {
+         id
+         city
+       }
+     }
+     ```
+   - State:
+     ```graphql
+     query {
+       properties(filter: { state: "AZ" }) {
+         id
+         state
+       }
+     }
+     ```
+   - Zip:
+     ```graphql
+     query {
+       properties(filter: { zipCode: "85268" }) {
+         id
+         zipCode
+       }
+     }
+     ```
 
-```graphql
-query ($id: ID!) {
-  property(id: $id) {
-    id
-    city
-    street
-    state
-    zipCode
-    lat
-    long
-  }
-}
-```
+4. Property details by id
 
-Delete by id:
+   ```graphql
+   query ($id: ID!) {
+     property(id: $id) {
+       id
+       city
+       street
+       state
+       zipCode
+       lat
+       long
+       weatherData
+       createdAt
+     }
+   }
+   ```
 
-```graphql
-mutation ($id: ID!) {
-  deleteProperty(id: $id)
-}
-```
+5. Add a new property (triggers Weatherstack)
+
+   ```graphql
+   mutation {
+     addProperty(
+       city: "Fountain Hills"
+       street: "15528 E Golden Eagle Blvd"
+       state: "AZ"
+       zipCode: "85268"
+     ) {
+       id
+       city
+       state
+       zipCode
+       lat
+       long
+     }
+   }
+   ```
+
+6. Delete any property
+   ```graphql
+   mutation ($id: ID!) {
+     deleteProperty(id: $id)
+   }
+   ```
