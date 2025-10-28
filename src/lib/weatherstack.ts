@@ -1,7 +1,7 @@
 export type FetchWeatherInput = {
   city: string;
-  state: string; // 2-letter
-  zipCode: string; // 5 digits
+  state: string;
+  zipCode: string; 
 };
 
 export type FetchWeatherResult = {
