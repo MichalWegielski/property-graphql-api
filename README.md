@@ -1,2 +1,3 @@
 # property-graphql-api
-Property app 
+
+Property app
