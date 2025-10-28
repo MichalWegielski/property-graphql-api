@@ -34,3 +34,61 @@ Open http://localhost:4000 and run:
 ```
 query { health }
 ```
+
+## GraphQL examples
+
+Add a property (calls Weatherstack during creation):
+
+```graphql
+mutation {
+  addProperty(
+    city: "Fountain Hills"
+    street: "15528 E Golden Eagle Blvd"
+    state: "AZ"
+    zipCode: "85268"
+  ) {
+    id
+    city
+    state
+    zipCode
+    lat
+    long
+  }
+}
+```
+
+List with filter + sort:
+
+```graphql
+query {
+  properties(filter: { city: "Fountain" }, sortByCreatedAt: desc) {
+    id
+    city
+    createdAt
+  }
+}
+```
+
+Get by id:
+
+```graphql
+query ($id: ID!) {
+  property(id: $id) {
+    id
+    city
+    street
+    state
+    zipCode
+    lat
+    long
+  }
+}
+```
+
+Delete by id:
+
+```graphql
+mutation ($id: ID!) {
+  deleteProperty(id: $id)
+}
+```

@@ -5,20 +5,42 @@ import {
   getProperty,
   listProperties,
 } from "./property.service.js";
+import { GraphQLError } from "graphql";
 
 export const resolvers = {
   JSON: GraphQLJSON,
   Query: {
-    properties: (_root: unknown, args: any) =>
-      listProperties({ filter: args.filter, sort: args.sortByCreatedAt }),
+    properties: async (_root: unknown, args: any) => {
+      try {
+        return await listProperties({
+          filter: args.filter,
+          sort: args.sortByCreatedAt,
+        });
+      } catch (_err) {
+        throw new GraphQLError("Invalid filter", {
+          extensions: { code: "BAD_USER_INPUT" },
+        });
+      }
+    },
     property: (_root: unknown, args: { id: string }) => getProperty(args.id),
   },
   Mutation: {
-    addProperty: (
+    addProperty: async (
       _root: unknown,
       args: { city: string; street: string; state: string; zipCode: string }
-    ) => createProperty(args),
-    deleteProperty: (_root: unknown, args: { id: string }) =>
-      deleteProperty(args.id),
+    ) => {
+      try {
+        return await createProperty(args);
+      } catch (_err) {
+        throw new GraphQLError("Failed to add property");
+      }
+    },
+    deleteProperty: async (_root: unknown, args: { id: string }) => {
+      try {
+        return await deleteProperty(args.id);
+      } catch (_err) {
+        throw new GraphQLError("Failed to delete property");
+      }
+    },
   },
 };

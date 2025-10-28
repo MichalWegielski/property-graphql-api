@@ -1,5 +1,10 @@
 import { prisma } from "../../lib/prisma.js";
 import { fetchCurrentWeather } from "../../lib/weatherstack.js";
+import {
+  createPropertyInput,
+  propertyFilterInput,
+} from "./property.validation.js";
+import { GraphQLError } from "graphql";
 
 export type SortOrder = "asc" | "desc";
 
@@ -13,6 +18,15 @@ export async function listProperties(args: {
   filter?: PropertyFilter;
   sort?: SortOrder;
 }) {
+  // Validate filter
+  try {
+    if (args.filter) propertyFilterInput.parse(args.filter);
+  } catch (_err) {
+    throw new GraphQLError("Invalid filter", {
+      extensions: { code: "BAD_USER_INPUT" },
+    });
+  }
+
   const where: any = {};
   if (args.filter?.city) {
     where.city = { contains: args.filter.city, mode: "insensitive" };
@@ -38,11 +52,28 @@ export async function createProperty(args: {
   state: string;
   zipCode: string;
 }) {
-  const weather = await fetchCurrentWeather({
-    city: args.city,
-    state: args.state,
-    zipCode: args.zipCode,
-  });
+  // Validate input
+  try {
+    createPropertyInput.parse(args);
+  } catch (_err) {
+    throw new GraphQLError("Invalid input", {
+      extensions: { code: "BAD_USER_INPUT" },
+    });
+  }
+
+  // External API call with guarding
+  let weather: { lat: number; long: number; current: unknown };
+  try {
+    weather = await fetchCurrentWeather({
+      city: args.city,
+      state: args.state,
+      zipCode: args.zipCode,
+    });
+  } catch (_err) {
+    throw new GraphQLError("Weather service error", {
+      extensions: { code: "EXTERNAL_API_ERROR" },
+    });
+  }
 
   return prisma.property.create({
     data: {
