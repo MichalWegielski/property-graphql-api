@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import { prisma } from "./lib/prisma.js";
 
 const typeDefs = `#graphql
   type Query { health: String! }
@@ -14,6 +15,7 @@ async function main() {
   const server = new ApolloServer({ typeDefs, resolvers });
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
+    context: async () => ({ prisma }),
   });
   // eslint-disable-next-line no-console
   console.log(`🚀 Server ready at ${url}`);

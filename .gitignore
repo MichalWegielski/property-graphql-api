@@ -1,4 +1,18 @@
+# deps & build
 node_modules/
 dist/
+
+# env & secrets
 .env
+
+# dev db (SQLite)
 prisma/dev.db
+
+# prisma/codegen artifacts 
+generated/
+.prisma/
+
+# test/IDE
+coverage/
+.vscode/
+.DS_Store

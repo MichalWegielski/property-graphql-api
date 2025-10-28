@@ -5,11 +5,22 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
+}
+
+model Property {
+  id          String   @id @default(cuid())
+  city        String
+  street      String
+  state       String
+  zipCode     String
+  weatherData Json
+  lat         Float
+  long        Float
+  createdAt   DateTime @default(now())
 }
